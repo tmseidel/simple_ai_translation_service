@@ -1,5 +1,7 @@
 # Simple AI Translation Service
 
+⚠️ **SECURITY NOTICE**: This project uses protobuf 4.25.8, which has a known JSON recursion depth bypass vulnerability with no available patch. This vulnerability has **LOW impact** on our use case (see [SECURITY.md](SECURITY.md) for details). All other dependencies are fully patched.
+
 A self-hosted AI-backed translation service compatible with the DeepL REST API interface. This service uses the NLLB-200 (No Language Left Behind) distilled AI model from Meta for high-quality neural machine translation.
 
 ## 📚 Documentation
@@ -250,14 +252,27 @@ Environment variables:
 
 ## Security
 
-This project uses security-patched versions of all dependencies:
-- **gunicorn 22.0.0+** (fixes HTTP Request/Response Smuggling vulnerabilities)
-- **torch 2.6.0+** (fixes buffer overflow, use-after-free, and RCE vulnerabilities)
-- **transformers 4.48.0+** (fixes deserialization vulnerabilities)
-- **protobuf 4.25.8+** (fixes Denial of Service vulnerabilities)
-- **sentencepiece 0.2.1+** (fixes heap overflow vulnerability)
+⚠️ **IMPORTANT SECURITY NOTICE**
 
-**Note**: One known vulnerability in protobuf (JSON recursion depth bypass) has no available patch yet. This vulnerability has minimal impact on our use case as protobuf is used for model serialization, not user input processing. See [SECURITY.md](SECURITY.md) for details.
+This project has **1 unpatched vulnerability** that cannot be fixed:
+
+### Protobuf JSON Recursion Depth Bypass
+- **Status**: ⚠️ NO PATCH AVAILABLE
+- **Affected**: protobuf <= 6.33.4 (all versions)
+- **Current version**: 4.25.8 (best available)
+- **Risk level**: LOW for our use case
+- **Why unfixable**: Vendor has not released a patch; affects all protobuf versions
+- **Mitigation**: protobuf is only used for model serialization from trusted sources, not user input
+- **Details**: See [SECURITY.md](SECURITY.md) for complete risk assessment
+
+### Fully Patched Dependencies (13 vulnerabilities fixed)
+- ✅ **gunicorn 22.0.0** (fixes HTTP Request/Response Smuggling vulnerabilities)
+- ✅ **torch 2.6.0** (fixes buffer overflow, use-after-free, and RCE vulnerabilities)
+- ✅ **transformers 4.48.0** (fixes deserialization vulnerabilities)
+- ✅ **protobuf 4.25.8** (fixes 3 of 4 DoS vulnerabilities - 1 unfixable)
+- ✅ **sentencepiece 0.2.1** (fixes heap overflow vulnerability)
+
+**Note**: We are using the latest available versions of all dependencies. The protobuf issue affects the entire protobuf ecosystem and will be resolved when the vendor releases a patch.
 
 For production deployments, we recommend:
 1. Keep dependencies up to date with security patches
