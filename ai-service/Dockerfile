@@ -13,7 +13,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Download model at build time (optional, can be done at runtime)
 RUN python -c "from transformers import AutoTokenizer, AutoModelForSeq2SeqLM; \
-    model_name = 'facebook/nllb-200-distilled-600M'; \
+    import os; \
+    model_name = os.environ.get('MODEL_NAME', 'facebook/nllb-200-1.3B'); \
     print('Downloading model...'); \
     AutoTokenizer.from_pretrained(model_name); \
     AutoModelForSeq2SeqLM.from_pretrained(model_name); \
