@@ -2,6 +2,9 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+ARG MODEL_NAME=facebook/nllb-200-1.3B
+ENV MODEL_NAME=$MODEL_NAME
+
 # Install dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \

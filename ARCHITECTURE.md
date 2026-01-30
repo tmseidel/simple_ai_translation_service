@@ -61,7 +61,7 @@
 │  │ facebook/nllb-200-1.3B (default, configurable)        │   │
 │  │  - 1.3B parameter transformer model                   │   │
 │  │  - 200 languages support                              │   │
-│  │  - ~1.2GB model size                                  │   │
+│  │  - ~2.4GB model size                                  │   │
 │  └──────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────┘
 ```

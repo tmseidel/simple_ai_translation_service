@@ -3,6 +3,8 @@ services:
     build:
       context: ./ai-service
       dockerfile: Dockerfile
+      args:
+        - MODEL_NAME=facebook/nllb-200-1.3B
     container_name: ai-translation-service
     ports:
       - "5000:5000"
