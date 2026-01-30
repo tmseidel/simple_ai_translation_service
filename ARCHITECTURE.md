@@ -106,9 +106,11 @@
 **Technology Stack:**
 - Python 3.11
 - Flask 3.0.0
-- Transformers 4.36.2
-- PyTorch 2.1.2
-- Gunicorn (production server)
+- Transformers 4.48.0 (security patched)
+- PyTorch 2.6.0 (security patched)
+- Gunicorn 22.0.0 (security patched)
+- Sentencepiece 0.2.1 (security patched)
+- Protobuf 4.25.8 (security patched)
 
 **Key Components:**
 
