@@ -99,8 +99,8 @@ flowchart TB
 **About:**
 - Developed by Meta AI Research
 - "No Language Left Behind" - 200 languages
-- Distilled version: 600M parameters (smaller, faster)
-- Full versions available: 1.3B, 3.3B parameters
+- Default version: 1.3B parameters (higher quality, slower)
+- Other versions available: 600M distilled, 3.3B parameters
 
 **Language Support:**
 - Covers major world languages

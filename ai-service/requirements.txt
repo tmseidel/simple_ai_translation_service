@@ -7,3 +7,4 @@ sentencepiece==0.2.1
 # See SECURITY.md for detailed risk assessment. Will update when vendor releases patch.
 protobuf==4.25.8
 gunicorn==22.0.0
+accelerate==1.12.0

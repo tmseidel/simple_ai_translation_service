@@ -4,11 +4,22 @@ This guide will help you get the Translation API up and running in minutes.
 
 ## Prerequisites
 
+### Option A: Docker (containerized)
+
 1. **Docker Desktop** (or Docker Engine + Docker Compose)
    - Windows/Mac: Download from https://www.docker.com/products/docker-desktop
    - Linux: Install docker and docker-compose packages
 
 2. **System Requirements**
+   - At least 4GB of available RAM
+   - 3GB of free disk space
+   - Internet connection (for initial model download)
+
+### Option B: Native install (Ansible)
+
+1. **Remote Debian/Ubuntu host** with systemd
+2. **Ansible 2.15+** on your control machine
+3. **System Requirements**
    - At least 4GB of available RAM
    - 3GB of free disk space
    - Internet connection (for initial model download)
@@ -30,7 +41,7 @@ docker compose up --build
 
 **What happens now:**
 - Docker builds two images (Spring Boot API and Python AI Service)
-- Downloads the NLLB-200 model (~1.2GB) - this happens once during build
+- Downloads the NLLB-200 model (~2.4GB for the default) - this happens once during build
 - Starts both services
 - First startup takes 5-10 minutes
 
@@ -78,6 +89,21 @@ chmod +x test-api.sh
 4. Navigate to the `bruno-collection` folder
 5. Try the pre-configured requests
 
+## Native Deployment with Ansible (No Docker)
+
+1. Update the inventory and variables:
+   - `ansible/inventory.ini`
+   - `ansible/group_vars/all.yml`
+
+2. Run the playbook from the repository root:
+   ```bash
+   ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
+   ```
+
+3. Validate services:
+   - `curl http://<server>:8080/health`
+   - `curl http://<server>:8080/v2/languages`
+
 ## Common Issues
 
 ### Port Already in Use
@@ -111,6 +137,14 @@ docker compose down
 
 # Stop and remove volumes (clean slate)
 docker compose down -v
+```
+
+## Configuring the AI Model
+
+To select a different NLLB model, set `MODEL_NAME` in `docker-compose.yml` or your environment, for example:
+
+```bash
+MODEL_NAME=facebook/nllb-200-distilled-600M docker compose up --build
 ```
 
 ## Next Steps

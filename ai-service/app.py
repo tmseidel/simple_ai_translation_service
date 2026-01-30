@@ -2,13 +2,16 @@ from flask import Flask, request, jsonify
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import os
 import logging
+import time
 
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Model configuration
-MODEL_NAME = "facebook/nllb-200-distilled-600M"
+MODEL_NAME = os.environ.get("MODEL_NAME", "facebook/nllb-200-1.3B")
+MODEL_LOAD_MAX_RETRIES = int(os.environ.get("MODEL_LOAD_MAX_RETRIES", "3"))
+MODEL_LOAD_RETRY_DELAY_SEC = int(os.environ.get("MODEL_LOAD_RETRY_DELAY_SEC", "5"))
 
 # Language code mapping for NLLB (DeepL to NLLB format)
 LANGUAGE_MAP = {
@@ -36,17 +39,34 @@ REVERSE_LANGUAGE_MAP = {v: k for k, v in LANGUAGE_MAP.items()}
 tokenizer = None
 model = None
 
+def _model_cached():
+    try:
+        AutoTokenizer.from_pretrained(MODEL_NAME, local_files_only=True)
+        AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME, local_files_only=True).to("cuda")
+        return True
+    except Exception:
+        return False
+
 def load_model():
     """Load the NLLB model and tokenizer"""
     global tokenizer, model
-    logger.info(f"Loading model: {MODEL_NAME}")
-    try:
-        tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-        model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME)
-        logger.info("Model loaded successfully")
-    except Exception as e:
-        logger.error(f"Failed to load model: {e}")
-        raise
+    logger.info("Loading model: %s", MODEL_NAME)
+    for attempt in range(1, MODEL_LOAD_MAX_RETRIES + 1):
+        try:
+            if _model_cached():
+                logger.info("Model already cached locally.")
+            else:
+                logger.info("Model not cached. Downloading...")
+            tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+            model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME).to("cuda")
+            logger.info("Model loaded successfully")
+            return
+        except Exception as e:
+            if attempt >= MODEL_LOAD_MAX_RETRIES:
+                logger.error("Failed to load model after %s attempts: %s", attempt, e)
+                raise
+            logger.warning("Model load failed (attempt %s/%s). Retrying in %ss...", attempt, MODEL_LOAD_MAX_RETRIES, MODEL_LOAD_RETRY_DELAY_SEC)
+            time.sleep(MODEL_LOAD_RETRY_DELAY_SEC)
 
 # Load model at module import time
 logger.info("Initializing AI Translation Service...")
@@ -73,7 +93,7 @@ def translate_text(text, source_lang, target_lang):
         logger.info(f"Translating from {src_lang_code} to {tgt_lang_code}")
         
         # Tokenize
-        inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
+        inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512).to("cuda")
         
         # Translate
         translated_tokens = model.generate(

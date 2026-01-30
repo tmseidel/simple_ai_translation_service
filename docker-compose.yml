@@ -3,11 +3,14 @@ services:
     build:
       context: ./ai-service
       dockerfile: Dockerfile
+      args:
+        - MODEL_NAME=facebook/nllb-200-3.3B
     container_name: ai-translation-service
     ports:
       - "5000:5000"
     environment:
       - PORT=5000
+      - MODEL_NAME=facebook/nllb-200-3.3B
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
       interval: 30s

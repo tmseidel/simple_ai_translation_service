@@ -1,0 +1,23 @@
+[Unit]
+Description=Simple AI Translation API
+After=network.target ai-translation.service
+Wants=ai-translation.service
+
+[Service]
+Type=simple
+User={{ app_user }}
+Group={{ app_group }}
+WorkingDirectory={{ app_dir }}/spring-boot-api
+Environment=SERVER_PORT={{ api_port }}
+Environment=AI_SERVICE_URL=http://localhost:{{ ai_port }}
+ExecStart=/usr/bin/java -jar {{ app_dir }}/spring-boot-api/target/translation-api.jar
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths={{ app_dir }}/spring-boot-api
+
+[Install]
+WantedBy=multi-user.target

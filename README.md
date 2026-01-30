@@ -2,7 +2,7 @@
 
 ⚠️ **SECURITY NOTICE**: This project uses protobuf 4.25.8, which has a known JSON recursion depth bypass vulnerability with no available patch. This vulnerability has **LOW impact** on our use case (see [SECURITY.md](SECURITY.md) for details). All other dependencies are fully patched.
 
-A self-hosted AI-backed translation service compatible with the DeepL REST API interface. This service uses the NLLB-200 (No Language Left Behind) distilled AI model from Meta for high-quality neural machine translation.
+A self-hosted AI-backed translation service compatible with the DeepL REST API interface. This service uses the NLLB-200 (No Language Left Behind) AI model from Meta for high-quality neural machine translation.
 
 ## 📚 Documentation
 
@@ -16,6 +16,7 @@ A self-hosted AI-backed translation service compatible with the DeepL REST API i
 - **DeepL-Compatible REST API**: Drop-in replacement for DeepL API endpoints
 - **NLLB-200 Model**: State-of-the-art neural machine translation supporting 200+ languages
 - **Containerized Architecture**: Easy deployment with Docker and Docker Compose
+- **Native Deployment**: Ansible playbook for native installs without Docker (Debian/Ubuntu hosts)
 - **Spring Boot Backend**: Robust Java REST API
 - **Python AI Service**: Efficient translation service using Transformers
 - **API Testing**: Includes Bruno collection for easy API testing
@@ -28,7 +29,7 @@ The service consists of two main components:
 2. **Python AI Service** (`ai-service/`): Performs actual translation using the NLLB-200 model
 
 ```
-Client → Spring Boot API (Port 8080) → Python AI Service (Port 5000) → NLLB-200 Model
+Client → Spring Boot API (Port 8080) → Python AI Service (Port 5000) → NLLB-200 Model (configurable)
 ```
 
 ## Supported Languages
@@ -53,9 +54,10 @@ The service supports the following languages (with their DeepL-style codes):
 
 ## Prerequisites
 
-- Docker and Docker Compose
-- At least 4GB of RAM available for Docker
-- Approximately 2GB of disk space for the AI model
+- Docker and Docker Compose for container deployments
+- **OR** a Debian/Ubuntu host with Python 3.11, Java 17, Maven, and systemd for native deployments
+- At least 4GB of RAM available for the AI model
+- Approximately 3GB of disk space for the AI model
 
 ## Quick Start
 
@@ -70,7 +72,7 @@ The service supports the following languages (with their DeepL-style codes):
    docker-compose up --build
    ```
 
-   The first startup will take several minutes as it downloads the NLLB-200 model (~1.2GB).
+   The first startup will take several minutes as it downloads the NLLB-200 model (~2.4GB).
 
 3. **Wait for services to be ready**:
    - AI Service: http://localhost:5000/health
@@ -153,6 +155,23 @@ Available requests:
 - **Get Supported Languages**: List all supported languages
 - **Multiple Language Translation**: Translate multiple texts at once
 
+## Native Deployment (Ansible)
+
+An Ansible playbook is available for installing the services directly on a Linux host without Docker.
+
+1. **Update the inventory and variables**:
+   - `ansible/inventory.ini`
+   - `ansible/group_vars/all.yml`
+
+2. **Run the playbook**:
+   ```bash
+   ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
+   ```
+
+3. **Verify services**:
+   - AI Service: `http://<server>:5000/health`
+   - REST API: `http://<server>:8080/v2/languages`
+
 ## Development
 
 ### Spring Boot API
@@ -223,6 +242,7 @@ Key settings:
 
 Environment variables:
 - `PORT`: Service port (default: 5000)
+- `MODEL_NAME`: Hugging Face model ID to load (default: `facebook/nllb-200-1.3B`)
 
 ## Troubleshooting
 
