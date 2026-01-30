@@ -30,7 +30,7 @@ docker compose up --build
 
 **What happens now:**
 - Docker builds two images (Spring Boot API and Python AI Service)
-- Downloads the NLLB-200 model (~1.2GB) - this happens once during build
+- Downloads the NLLB-200 model (~2.4GB for the default) - this happens once during build
 - Starts both services
 - First startup takes 5-10 minutes
 
@@ -111,6 +111,14 @@ docker compose down
 
 # Stop and remove volumes (clean slate)
 docker compose down -v
+```
+
+## Configuring the AI Model
+
+To select a different NLLB model, set `MODEL_NAME` in `docker-compose.yml` or your environment, for example:
+
+```bash
+MODEL_NAME=facebook/nllb-200-distilled-600M docker compose up --build
 ```
 
 ## Next Steps

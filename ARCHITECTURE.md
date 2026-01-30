@@ -58,10 +58,10 @@
 │  └────────────────────┬─────────────────────────────────┘   │
 │                       │                                      │
 │  ┌────────────────────▼─────────────────────────────────┐   │
-│  │ facebook/nllb-200-distilled-600M                      │   │
-│  │  - 600M parameter transformer model                   │   │
+│  │ facebook/nllb-200-1.3B (default, configurable)        │   │
+│  │  - 1.3B parameter transformer model                   │   │
 │  │  - 200 languages support                              │   │
-│  │  - ~1.2GB model size                                  │   │
+│  │  - ~2.4GB model size                                  │   │
 │  └──────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -141,8 +141,8 @@
 **About:**
 - Developed by Meta AI Research
 - "No Language Left Behind" - 200 languages
-- Distilled version: 600M parameters (smaller, faster)
-- Full versions available: 1.3B, 3.3B parameters
+- Default version: 1.3B parameters (higher quality, slower)
+- Other versions available: 600M distilled, 3.3B parameters
 
 **Language Support:**
 - Covers major world languages

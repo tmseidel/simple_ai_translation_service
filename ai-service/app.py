@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Model configuration
-MODEL_NAME = "facebook/nllb-200-distilled-600M"
+MODEL_NAME = os.environ.get("MODEL_NAME", "facebook/nllb-200-1.3B")
 
 # Language code mapping for NLLB (DeepL to NLLB format)
 LANGUAGE_MAP = {

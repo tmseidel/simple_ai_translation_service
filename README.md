@@ -2,7 +2,7 @@
 
 ⚠️ **SECURITY NOTICE**: This project uses protobuf 4.25.8, which has a known JSON recursion depth bypass vulnerability with no available patch. This vulnerability has **LOW impact** on our use case (see [SECURITY.md](SECURITY.md) for details). All other dependencies are fully patched.
 
-A self-hosted AI-backed translation service compatible with the DeepL REST API interface. This service uses the NLLB-200 (No Language Left Behind) distilled AI model from Meta for high-quality neural machine translation.
+A self-hosted AI-backed translation service compatible with the DeepL REST API interface. This service uses the NLLB-200 (No Language Left Behind) AI model from Meta for high-quality neural machine translation.
 
 ## 📚 Documentation
 
@@ -27,7 +27,7 @@ The service consists of two main components:
 2. **Python AI Service** (`ai-service/`): Performs actual translation using the NLLB-200 model
 
 ```
-Client → Spring Boot API (Port 8080) → Python AI Service (Port 5000) → NLLB-200 Model
+Client → Spring Boot API (Port 8080) → Python AI Service (Port 5000) → NLLB-200 Model (configurable)
 ```
 
 ## Supported Languages
@@ -54,7 +54,7 @@ The service supports the following languages (with their DeepL-style codes):
 
 - Docker and Docker Compose
 - At least 4GB of RAM available for Docker
-- Approximately 2GB of disk space for the AI model
+- Approximately 3GB of disk space for the AI model
 
 ## Quick Start
 
@@ -69,7 +69,7 @@ The service supports the following languages (with their DeepL-style codes):
    docker-compose up --build
    ```
 
-   The first startup will take several minutes as it downloads the NLLB-200 model (~1.2GB).
+   The first startup will take several minutes as it downloads the NLLB-200 model (~2.4GB).
 
 3. **Wait for services to be ready**:
    - AI Service: http://localhost:5000/health
@@ -222,6 +222,7 @@ Key settings:
 
 Environment variables:
 - `PORT`: Service port (default: 5000)
+- `MODEL_NAME`: Hugging Face model ID to load (default: `facebook/nllb-200-1.3B`)
 
 ## Troubleshooting
 
