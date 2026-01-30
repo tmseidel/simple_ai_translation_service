@@ -180,9 +180,16 @@ An Ansible playbook is available for installing the services directly on a Linux
    - `ansible/templates/*.service.j2` for systemd customization
 
 2. **Run the playbook**:
-   ```bash
-   ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
-   ```
+    ```bash
+    ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
+    ```
+    For a one-off host/user/key without editing the inventory:
+    ```bash
+    ansible-playbook -i "translation.example.com," \
+      -u ubuntu \
+      --private-key ~/.ssh/translation.pem \
+      ansible/playbook.yml
+    ```
 
 3. **Verify services**:
    - AI Service: `http://<server>:5000/health`

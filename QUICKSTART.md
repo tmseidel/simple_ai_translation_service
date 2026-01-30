@@ -100,6 +100,13 @@ chmod +x test-api.sh
    ```bash
    ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
    ```
+   For a one-off host/user/key without editing the inventory:
+   ```bash
+   ansible-playbook -i "translation.example.com," \
+     -u ubuntu \
+     --private-key ~/.ssh/translation.pem \
+     ansible/playbook.yml
+   ```
 
 3. Validate services:
    - `curl http://<server>:8080/health`
