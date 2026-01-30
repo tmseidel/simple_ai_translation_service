@@ -2,68 +2,26 @@
 
 ## System Architecture
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                         Client Application                   │
-│         (Web Browser, Mobile App, Backend Service)          │
-└───────────────────────────┬─────────────────────────────────┘
-                            │ HTTP/REST
-                            │
-┌───────────────────────────▼─────────────────────────────────┐
-│                    Spring Boot REST API                      │
-│                       (Port 8080)                            │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │ TranslationController                                 │   │
-│  │  - POST /v2/translate                                 │   │
-│  │  - GET  /v2/languages                                 │   │
-│  │  - GET  /health                                       │   │
-│  └────────────────────┬─────────────────────────────────┘   │
-│                       │                                      │
-│  ┌────────────────────▼─────────────────────────────────┐   │
-│  │ TranslationService                                    │   │
-│  │  - Request validation                                 │   │
-│  │  - Response formatting                                │   │
-│  │  - Error handling                                     │   │
-│  └────────────────────┬─────────────────────────────────┘   │
-│                       │                                      │
-│  ┌────────────────────▼─────────────────────────────────┐   │
-│  │ AiTranslationService                                  │   │
-│  │  - HTTP client to AI service                          │   │
-│  │  - Request/Response mapping                           │   │
-│  └────────────────────┬─────────────────────────────────┘   │
-└───────────────────────┼─────────────────────────────────────┘
-                        │ HTTP/JSON
-                        │
-┌───────────────────────▼─────────────────────────────────────┐
-│              Python AI Translation Service                   │
-│                    (Port 5000)                               │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │ Flask Application                                     │   │
-│  │  - POST /translate                                    │   │
-│  │  - GET  /health                                       │   │
-│  └────────────────────┬─────────────────────────────────┘   │
-│                       │                                      │
-│  ┌────────────────────▼─────────────────────────────────┐   │
-│  │ Translation Logic                                     │   │
-│  │  - Language code mapping                              │   │
-│  │  - Text preprocessing                                 │   │
-│  │  - Post-processing                                    │   │
-│  └────────────────────┬─────────────────────────────────┘   │
-│                       │                                      │
-│  ┌────────────────────▼─────────────────────────────────┐   │
-│  │ NLLB-200 Model Interface                              │   │
-│  │  - Model loading & caching                            │   │
-│  │  - Tokenization                                       │   │
-│  │  - Translation generation                             │   │
-│  └────────────────────┬─────────────────────────────────┘   │
-│                       │                                      │
-│  ┌────────────────────▼─────────────────────────────────┐   │
-│  │ facebook/nllb-200-1.3B (default, configurable)        │   │
-│  │  - 1.3B parameter transformer model                   │   │
-│  │  - 200 languages support                              │   │
-│  │  - ~2.4GB model size                                  │   │
-│  └──────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    client["Client Application<br/>(Web Browser, Mobile App, Backend Service)"]
+    subgraph spring["Spring Boot REST API (Port 8080)"]
+        controller["TranslationController<br/>- POST /v2/translate<br/>- GET /v2/languages"]
+        healthController["HealthController<br/>- GET /health"]
+        service["TranslationService<br/>- Request validation<br/>- Response formatting<br/>- Error handling"]
+        aiService["AiTranslationService<br/>- HTTP client to AI service<br/>- Request/Response mapping"]
+        controller --> service --> aiService
+        healthController
+    end
+    subgraph python["Python AI Translation Service (Port 5000)"]
+        flask["Flask Application<br/>- POST /translate<br/>- GET /health"]
+        logic["Translation Logic<br/>- Language code mapping<br/>- Text preprocessing<br/>- Post-processing"]
+        modelInterface["NLLB-200 Model Interface<br/>- Model loading & caching<br/>- Tokenization<br/>- Translation generation"]
+        model["facebook/nllb-200-distilled-600M<br/>- 600M parameter transformer model<br/>- 200 languages support<br/>- ~1.2GB model size"]
+        flask --> logic --> modelInterface --> model
+    end
+    client -->|HTTP/REST| controller
+    aiService -->|HTTP/JSON| flask
 ```
 
 ## Component Details
@@ -212,27 +170,13 @@
 
 ### Container Setup
 
-```
-┌─────────────────────────────────────────┐
-│         Docker Network                   │
-│       (translation-network)              │
-│                                          │
-│  ┌─────────────────────────────────┐    │
-│  │  ai-service container            │    │
-│  │  - Python AI service             │    │
-│  │  - Port 5000 (internal)          │    │
-│  │  - Port 5000 (external)          │    │
-│  │  - Model cached in container     │    │
-│  └───────────┬─────────────────────┘    │
-│              │                           │
-│  ┌───────────▼─────────────────────┐    │
-│  │  spring-boot-api container       │    │
-│  │  - Spring Boot application       │    │
-│  │  - Port 8080 (internal)          │    │
-│  │  - Port 8080 (external)          │    │
-│  │  - Depends on ai-service         │    │
-│  └──────────────────────────────────┘    │
-└─────────────────────────────────────────┘
+```mermaid
+flowchart LR
+    subgraph network["Docker Network (translation-network)"]
+        ai["ai-service container<br/>- Python AI service<br/>- Port 5000 (internal/external)<br/>- Model cached in container"]
+        api["spring-boot-api container<br/>- Spring Boot application<br/>- Port 8080 (internal/external)<br/>- Depends on ai-service"]
+        api -->|HTTP/JSON| ai
+    end
 ```
 
 ### Build Process
