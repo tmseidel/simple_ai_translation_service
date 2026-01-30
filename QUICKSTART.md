@@ -97,9 +97,9 @@ chmod +x test-api.sh
    - `ansible/templates/*.service.j2` for systemd overrides
 
 2. Run the playbook from the repository root:
-    ```bash
-    ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
-    ```
+   ```bash
+   ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
+   ```
    For a one-off host/user/key without editing the inventory:
    ```bash
    ansible-playbook -i "translation.example.com," \
