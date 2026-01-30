@@ -1,5 +1,18 @@
 # Security Policy
 
+## Known Vulnerabilities Without Patches
+
+### protobuf JSON Recursion Depth Bypass
+- **CVE**: JSON recursion depth bypass
+- **Affected Versions**: All versions <= 6.33.4
+- **Status**: No patch available as of 2024-01-30
+- **Risk Level**: Medium
+- **Mitigation**: 
+  - This vulnerability requires crafted JSON input with deeply nested structures
+  - Our implementation uses protobuf for model serialization, not for user input
+  - Input validation limits prevent malicious deeply-nested JSON
+  - Monitor for security updates and apply when available
+
 ## Supported Versions
 
 We actively maintain and provide security updates for the latest version of this project.

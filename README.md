@@ -257,6 +257,8 @@ This project uses security-patched versions of all dependencies:
 - **protobuf 4.25.8+** (fixes Denial of Service vulnerabilities)
 - **sentencepiece 0.2.1+** (fixes heap overflow vulnerability)
 
+**Note**: One known vulnerability in protobuf (JSON recursion depth bypass) has no available patch yet. This vulnerability has minimal impact on our use case as protobuf is used for model serialization, not user input processing. See [SECURITY.md](SECURITY.md) for details.
+
 For production deployments, we recommend:
 1. Keep dependencies up to date with security patches
 2. Add API key authentication
@@ -266,6 +268,8 @@ For production deployments, we recommend:
 6. Add request validation and sanitization
 7. Monitor and log all requests
 8. Consider IP whitelisting for sensitive deployments
+
+See [SECURITY.md](SECURITY.md) for comprehensive security guidelines.
 
 ## License
 
