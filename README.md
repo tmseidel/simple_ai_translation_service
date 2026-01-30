@@ -15,6 +15,7 @@ A self-hosted AI-backed translation service compatible with the DeepL REST API i
 - **DeepL-Compatible REST API**: Drop-in replacement for DeepL API endpoints
 - **NLLB-200 Model**: State-of-the-art neural machine translation supporting 200+ languages
 - **Containerized Architecture**: Easy deployment with Docker and Docker Compose
+- **Native Deployment**: Ansible playbook for native installs without Docker
 - **Spring Boot Backend**: Robust Java REST API
 - **Python AI Service**: Efficient translation service using Transformers
 - **API Testing**: Includes Bruno collection for easy API testing
@@ -52,8 +53,9 @@ The service supports the following languages (with their DeepL-style codes):
 
 ## Prerequisites
 
-- Docker and Docker Compose
-- At least 4GB of RAM available for Docker
+- Docker and Docker Compose for container deployments
+- **OR** a Linux host with Python 3.11, Java 17, Maven, and systemd for native deployments
+- At least 4GB of RAM available for the AI model
 - Approximately 3GB of disk space for the AI model
 
 ## Quick Start
@@ -151,6 +153,23 @@ Available requests:
 - **Translate with Source Language**: Translation with explicit source language
 - **Get Supported Languages**: List all supported languages
 - **Multiple Language Translation**: Translate multiple texts at once
+
+## Native Deployment (Ansible)
+
+An Ansible playbook is available for installing the services directly on a Linux host without Docker.
+
+1. **Update the inventory and variables**:
+   - `ansible/inventory.ini`
+   - `ansible/group_vars/all.yml`
+
+2. **Run the playbook**:
+   ```bash
+   ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
+   ```
+
+3. **Verify services**:
+   - AI Service: `http://<server>:5000/health`
+   - REST API: `http://<server>:8080/v2/languages`
 
 ## Development
 

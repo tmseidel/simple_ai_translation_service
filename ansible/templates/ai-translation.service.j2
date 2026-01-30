@@ -1,0 +1,17 @@
+[Unit]
+Description=Simple AI Translation Service
+After=network.target
+
+[Service]
+Type=simple
+User={{ app_user }}
+Group={{ app_group }}
+WorkingDirectory={{ app_dir }}/ai-service
+Environment=PORT={{ ai_port }}
+Environment=MODEL_NAME={{ model_name }}
+ExecStart={{ ai_venv_path }}/bin/gunicorn --bind 0.0.0.0:{{ ai_port }} --workers 1 --timeout 300 app:app
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
