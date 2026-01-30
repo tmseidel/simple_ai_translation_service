@@ -19,7 +19,7 @@ def _resolve_device():
     if USE_CUDA and torch.cuda.is_available():
         return "cuda"
     if USE_CUDA:
-        logger.warning("CUDA requested but not available. Falling back to CPU.")
+        logger.warning("CUDA requested but not available. Falling back to CPU. Set USE_CUDA=false to disable CUDA.")
     return "cpu"
 
 DEVICE = _resolve_device()
@@ -125,7 +125,7 @@ def translate_text(text, source_lang, target_lang):
 @app.route('/health', methods=['GET'])
 def health():
     """Health check endpoint"""
-    return jsonify({"status": "healthy", "model": MODEL_NAME}), 200
+    return jsonify({"status": "healthy", "model": MODEL_NAME, "device": DEVICE}), 200
 
 @app.route('/translate', methods=['POST'])
 def translate():
