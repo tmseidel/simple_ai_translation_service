@@ -7,11 +7,15 @@ Type=simple
 User={{ app_user }}
 Group={{ app_group }}
 WorkingDirectory={{ app_dir }}/ai-service
-Environment=PORT={{ ai_port }}
 Environment=MODEL_NAME={{ model_name }}
-ExecStart={{ ai_venv_path }}/bin/gunicorn --bind 0.0.0.0:{{ ai_port }} --workers 1 --timeout 300 app:app
+ExecStart={{ ai_venv_path }}/bin/gunicorn --bind {{ ai_bind_host }}:{{ ai_port }} --workers {{ ai_workers }} --timeout 300 app:app
 Restart=on-failure
 RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths={{ app_dir }}/ai-service
 
 [Install]
 WantedBy=multi-user.target

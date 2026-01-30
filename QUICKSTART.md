@@ -17,7 +17,7 @@ This guide will help you get the Translation API up and running in minutes.
 
 ### Option B: Native install (Ansible)
 
-1. **Remote Linux host** with systemd
+1. **Remote Debian/Ubuntu host** with systemd
 2. **Ansible 2.15+** on your control machine
 3. **System Requirements**
    - At least 4GB of available RAM

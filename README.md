@@ -15,7 +15,7 @@ A self-hosted AI-backed translation service compatible with the DeepL REST API i
 - **DeepL-Compatible REST API**: Drop-in replacement for DeepL API endpoints
 - **NLLB-200 Model**: State-of-the-art neural machine translation supporting 200+ languages
 - **Containerized Architecture**: Easy deployment with Docker and Docker Compose
-- **Native Deployment**: Ansible playbook for native installs without Docker
+- **Native Deployment**: Ansible playbook for native installs without Docker (Debian/Ubuntu hosts)
 - **Spring Boot Backend**: Robust Java REST API
 - **Python AI Service**: Efficient translation service using Transformers
 - **API Testing**: Includes Bruno collection for easy API testing
@@ -54,7 +54,7 @@ The service supports the following languages (with their DeepL-style codes):
 ## Prerequisites
 
 - Docker and Docker Compose for container deployments
-- **OR** a Linux host with Python 3.11, Java 17, Maven, and systemd for native deployments
+- **OR** a Debian/Ubuntu host with Python 3.11, Java 17, Maven, and systemd for native deployments
 - At least 4GB of RAM available for the AI model
 - Approximately 3GB of disk space for the AI model
 
