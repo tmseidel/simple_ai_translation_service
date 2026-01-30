@@ -248,6 +248,25 @@ Environment variables:
 - **Memory Usage**: AI service requires ~2-3GB RAM
 - **Concurrent Requests**: Limited by available resources
 
+## Security
+
+This project uses security-patched versions of all dependencies:
+- **gunicorn 22.0.0+** (fixes HTTP Request/Response Smuggling vulnerabilities)
+- **torch 2.6.0+** (fixes buffer overflow, use-after-free, and RCE vulnerabilities)
+- **transformers 4.48.0+** (fixes deserialization vulnerabilities)
+- **protobuf 4.25.8+** (fixes Denial of Service vulnerabilities)
+- **sentencepiece 0.2.1+** (fixes heap overflow vulnerability)
+
+For production deployments, we recommend:
+1. Keep dependencies up to date with security patches
+2. Add API key authentication
+3. Configure specific CORS origins (not wildcard)
+4. Implement rate limiting
+5. Use HTTPS/TLS encryption
+6. Add request validation and sanitization
+7. Monitor and log all requests
+8. Consider IP whitelisting for sensitive deployments
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
