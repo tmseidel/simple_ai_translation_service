@@ -29,6 +29,9 @@ LANGUAGE_MAP = {
     'KO': 'kor_Hang'
 }
 
+# Reverse mapping for NLLB to DeepL format
+REVERSE_LANGUAGE_MAP = {v: k for k, v in LANGUAGE_MAP.items()}
+
 # Global variables for model and tokenizer
 tokenizer = None
 model = None
@@ -44,6 +47,10 @@ def load_model():
     except Exception as e:
         logger.error(f"Failed to load model: {e}")
         raise
+
+# Load model at module import time
+logger.info("Initializing AI Translation Service...")
+load_model()
 
 def get_nllb_language_code(lang_code):
     """Convert DeepL language code to NLLB format"""
@@ -94,15 +101,18 @@ def translate():
     try:
         data = request.json
         
-        if not data or 'text' not in data or 'targetLang' not in data:
-            return jsonify({"error": "Missing required fields: text, targetLang"}), 400
+        if not data:
+            return jsonify({"error": "Request body is required"}), 400
         
         text = data.get('text')
-        source_lang = data.get('sourceLang')
         target_lang = data.get('targetLang')
+        source_lang = data.get('sourceLang')
         
-        if not text or not target_lang:
-            return jsonify({"error": "text and targetLang cannot be empty"}), 400
+        if not text:
+            return jsonify({"error": "Field 'text' is required and cannot be empty"}), 400
+        
+        if not target_lang:
+            return jsonify({"error": "Field 'targetLang' is required and cannot be empty"}), 400
         
         # Translate
         translated_text, detected_source = translate_text(text, source_lang, target_lang)
@@ -110,7 +120,7 @@ def translate():
         # Prepare response
         response = {
             "translatedText": translated_text,
-            "detectedSourceLanguage": detected_source.split('_')[0].upper() if detected_source else "EN"
+            "detectedSourceLanguage": REVERSE_LANGUAGE_MAP.get(detected_source, "EN")
         }
         
         return jsonify(response), 200
@@ -120,6 +130,5 @@ def translate():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    load_model()
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)

@@ -3,11 +3,14 @@ package com.translation.api.service;
 import com.translation.api.model.AiTranslationRequest;
 import com.translation.api.model.AiTranslationResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.time.Duration;
 
 @Service
 public class AiTranslationService {
@@ -17,8 +20,11 @@ public class AiTranslationService {
     
     private final RestTemplate restTemplate;
     
-    public AiTranslationService() {
-        this.restTemplate = new RestTemplate();
+    public AiTranslationService(RestTemplateBuilder restTemplateBuilder) {
+        this.restTemplate = restTemplateBuilder
+            .setConnectTimeout(Duration.ofSeconds(10))
+            .setReadTimeout(Duration.ofSeconds(300))
+            .build();
     }
     
     public AiTranslationResponse translate(String text, String sourceLang, String targetLang) {
