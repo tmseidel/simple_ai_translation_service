@@ -93,7 +93,8 @@ chmod +x test-api.sh
 
 1. Update the inventory and variables:
    - `ansible/inventory.ini`
-   - `ansible/group_vars/all.yml`
+   - `ansible/group_vars/all.yml` (repo URL, service ports, model name, `use_cuda`, cache path)
+   - `ansible/templates/*.service.j2` for systemd overrides
 
 2. Run the playbook from the repository root:
    ```bash
@@ -103,6 +104,11 @@ chmod +x test-api.sh
 3. Validate services:
    - `curl http://<server>:8080/health`
    - `curl http://<server>:8080/v2/languages`
+
+4. Optional GPU/system validation on the target host (checks CUDA, GPU drivers, and FP16 support):
+   ```bash
+   python ai-service/system_check.py
+   ```
 
 ## Common Issues
 

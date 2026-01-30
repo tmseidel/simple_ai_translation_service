@@ -223,7 +223,7 @@ flowchart LR
 3. **Performance Optimization**
    - Model quantization (INT8)
    - Batch processing
-   - GPU acceleration
+   - GPU acceleration (configurable via `USE_CUDA` with CPU fallback)
    - Model serving frameworks (TorchServe, ONNX)
 
 ## Security Considerations

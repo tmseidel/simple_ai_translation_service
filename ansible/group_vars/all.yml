@@ -13,3 +13,4 @@ ai_workers: 1
 model_load_max_retries: 3
 model_load_retry_delay_sec: 5
 ai_cache_dir: "{{ app_dir }}/.cache"
+use_cuda: true
