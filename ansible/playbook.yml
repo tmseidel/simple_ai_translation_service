@@ -11,6 +11,7 @@
       - build-essential
       - openjdk-17-jdk
       - maven
+    maven_user_home: "/home/{{ app_user }}/.m2"
   tasks:
     - name: Fail if unsupported OS
       ansible.builtin.assert:
@@ -42,7 +43,16 @@
         group: "{{ app_group }}"
         system: true
         shell: /usr/sbin/nologin
-        create_home: false
+        create_home: true
+        home: "/home/{{ app_user }}"
+
+    - name: Ensure service user home exists
+      ansible.builtin.file:
+        path: "/home/{{ app_user }}"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0755"
 
     - name: Ensure application directory exists
       ansible.builtin.file:
@@ -71,10 +81,20 @@
       become_user: "{{ app_user }}"
       notify: Restart AI translation service
 
+    - name: Ensure Maven local repository dir
+      ansible.builtin.file:
+        path: "{{ maven_user_home }}/repository"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0755"
+
     - name: Build Spring Boot API
       ansible.builtin.command: mvn clean package -DskipTests
       args:
         chdir: "{{ app_dir }}/spring-boot-api"
+      environment:
+        MAVEN_USER_HOME: "{{ maven_user_home }}"
       become_user: "{{ app_user }}"
       notify: Restart translation API service
 
@@ -109,6 +129,14 @@
       loop:
         - ai-translation.service
         - translation-api.service
+
+    - name: Ensure AI cache directory
+      ansible.builtin.file:
+        path: "{{ ai_cache_dir }}"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: "0755"
 
   handlers:
     - name: Restart AI translation service

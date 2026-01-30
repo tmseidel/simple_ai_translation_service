@@ -7,6 +7,9 @@ repo_url: https://github.com/tmseidel/simple_ai_translation_service.git
 repo_version: main
 api_port: 8080
 ai_port: 5000
-model_name: facebook/nllb-200-1.3B
+model_name: facebook/nllb-200-3.3B
 ai_bind_host: 127.0.0.1
 ai_workers: 1
+model_load_max_retries: 3
+model_load_retry_delay_sec: 5
+ai_cache_dir: "{{ app_dir }}/.cache"
