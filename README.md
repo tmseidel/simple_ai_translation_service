@@ -54,7 +54,7 @@ The service supports the following languages (with their DeepL-style codes):
 
 - Docker and Docker Compose
 - At least 4GB of RAM available for Docker
-- Approximately 2GB of disk space for the AI model
+- Approximately 3GB of disk space for the AI model
 
 ## Quick Start
 
@@ -69,7 +69,7 @@ The service supports the following languages (with their DeepL-style codes):
    docker-compose up --build
    ```
 
-   The first startup will take several minutes as it downloads the NLLB-200 model (~1.2GB).
+   The first startup will take several minutes as it downloads the NLLB-200 model (~2.4GB).
 
 3. **Wait for services to be ready**:
    - AI Service: http://localhost:5000/health
