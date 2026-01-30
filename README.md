@@ -9,6 +9,7 @@ A self-hosted AI-backed translation service compatible with the DeepL REST API i
 - **[Quick Start Guide](QUICKSTART.md)** - Get started in 5 minutes
 - **[API Documentation](API.md)** - Complete API reference
 - **[Architecture Overview](ARCHITECTURE.md)** - System design and components
+- **[Component & Dependency Details](COMPONENTS.md)** - Deep dive on components, transformers, and Python libs
 
 ## Features
 
