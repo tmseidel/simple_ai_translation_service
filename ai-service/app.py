@@ -19,7 +19,7 @@ def _resolve_device():
     if USE_CUDA and torch.cuda.is_available():
         return "cuda"
     if USE_CUDA:
-        logger.warning("CUDA requested but not available. Falling back to CPU. Set USE_CUDA=false to disable CUDA.")
+        logger.warning("CUDA requested but not available. Falling back to CPU. Set USE_CUDA=false to suppress this warning.")
     return "cpu"
 
 DEVICE = _resolve_device()
