@@ -1,0 +1,32 @@
+meta {
+  name: Translate with Source Language
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8080/v2/translate
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "text": [
+      "Bonjour, comment allez-vous?"
+    ],
+    "source_lang": "FR",
+    "target_lang": "EN"
+  }
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  
+  test("Translation is successful", function() {
+    expect(res.body.translations).to.be.an('array');
+    expect(res.body.translations[0].text).to.be.a('string');
+  });
+}

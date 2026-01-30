@@ -1,0 +1,39 @@
+meta {
+  name: Translate Text
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/v2/translate
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "text": [
+      "Hello, how are you?",
+      "This is a test translation."
+    ],
+    "target_lang": "DE"
+  }
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  
+  test("Response has translations", function() {
+    expect(res.body.translations).to.be.an('array');
+    expect(res.body.translations.length).to.be.greaterThan(0);
+  });
+  
+  test("Each translation has required fields", function() {
+    res.body.translations.forEach(t => {
+      expect(t).to.have.property('text');
+      expect(t).to.have.property('detected_source_language');
+    });
+  });
+}

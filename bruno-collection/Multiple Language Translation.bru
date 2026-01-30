@@ -1,0 +1,33 @@
+meta {
+  name: Multiple Language Translation
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:8080/v2/translate
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "text": [
+      "Hello World",
+      "Good morning",
+      "Thank you very much"
+    ],
+    "target_lang": "ES"
+  }
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  
+  test("All texts are translated", function() {
+    expect(res.body.translations).to.be.an('array');
+    expect(res.body.translations.length).to.equal(3);
+  });
+}
