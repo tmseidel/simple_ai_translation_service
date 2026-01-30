@@ -1,0 +1,9 @@
+flask==3.0.0
+transformers==4.48.0
+torch==2.6.0
+sentencepiece==0.2.1
+# WARNING: protobuf 4.25.8 has an unfixable JSON recursion vulnerability (no patch available)
+# This is the latest version with other security fixes applied. Risk is LOW for our use case.
+# See SECURITY.md for detailed risk assessment. Will update when vendor releases patch.
+protobuf==4.25.8
+gunicorn==22.0.0
