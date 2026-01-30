@@ -4,11 +4,22 @@ This guide will help you get the Translation API up and running in minutes.
 
 ## Prerequisites
 
+### Option A: Docker (containerized)
+
 1. **Docker Desktop** (or Docker Engine + Docker Compose)
    - Windows/Mac: Download from https://www.docker.com/products/docker-desktop
    - Linux: Install docker and docker-compose packages
 
 2. **System Requirements**
+   - At least 4GB of available RAM
+   - 3GB of free disk space
+   - Internet connection (for initial model download)
+
+### Option B: Native install (Ansible)
+
+1. **Remote Debian/Ubuntu host** with systemd
+2. **Ansible 2.15+** on your control machine
+3. **System Requirements**
    - At least 4GB of available RAM
    - 3GB of free disk space
    - Internet connection (for initial model download)
@@ -77,6 +88,21 @@ chmod +x test-api.sh
 3. Click "Open Collection"
 4. Navigate to the `bruno-collection` folder
 5. Try the pre-configured requests
+
+## Native Deployment with Ansible (No Docker)
+
+1. Update the inventory and variables:
+   - `ansible/inventory.ini`
+   - `ansible/group_vars/all.yml`
+
+2. Run the playbook from the repository root:
+   ```bash
+   ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
+   ```
+
+3. Validate services:
+   - `curl http://<server>:8080/health`
+   - `curl http://<server>:8080/v2/languages`
 
 ## Common Issues
 

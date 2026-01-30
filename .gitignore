@@ -39,3 +39,6 @@ Thumbs.db
 
 # Environment
 .env
+
+# Ansible
+ansible/*.retry

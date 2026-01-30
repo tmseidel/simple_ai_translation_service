@@ -1,0 +1,12 @@
+---
+app_user: translation
+app_group: translation
+app_dir: /opt/simple-ai-translation-service
+ai_venv_path: /opt/simple-ai-translation-service/ai-service/venv
+repo_url: https://github.com/tmseidel/simple_ai_translation_service.git
+repo_version: main
+api_port: 8080
+ai_port: 5000
+model_name: facebook/nllb-200-1.3B
+ai_bind_host: 127.0.0.1
+ai_workers: 1
