@@ -2,6 +2,12 @@
 
 A self-hosted AI-backed translation service compatible with the DeepL REST API interface. This service uses the NLLB-200 (No Language Left Behind) distilled AI model from Meta for high-quality neural machine translation.
 
+## 📚 Documentation
+
+- **[Quick Start Guide](QUICKSTART.md)** - Get started in 5 minutes
+- **[API Documentation](API.md)** - Complete API reference
+- **[Architecture Overview](ARCHITECTURE.md)** - System design and components
+
 ## Features
 
 - **DeepL-Compatible REST API**: Drop-in replacement for DeepL API endpoints
@@ -244,7 +250,7 @@ Environment variables:
 
 ## License
 
-This project is provided as-is for self-hosting purposes.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Credits
 
