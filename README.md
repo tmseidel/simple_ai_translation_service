@@ -159,9 +159,25 @@ Available requests:
 
 An Ansible playbook is available for installing the services directly on a Linux host without Docker.
 
+**What it does:**
+- Installs system dependencies (Python 3.11, Java 17, Maven, build tools)
+- Clones the repository to `app_dir`
+- Creates a virtual environment and installs AI service requirements
+- Builds the Spring Boot API JAR
+- Configures and starts systemd services for both components
+- Sets cache directories for Hugging Face model assets
+
+**Key Ansible files:**
+- `ansible/playbook.yml`: main deployment steps
+- `ansible/group_vars/all.yml`: deployment variables (ports, model, user/group, cache, `use_cuda`)
+- `ansible/inventory.ini`: target hosts and SSH users
+- `ansible/templates/*.service.j2`: systemd unit templates for AI + API
+- `ansible.cfg`: control machine Ansible configuration
+
 1. **Update the inventory and variables**:
    - `ansible/inventory.ini`
-   - `ansible/group_vars/all.yml`
+   - `ansible/group_vars/all.yml` (repo URL, ports, model name, service user/group, `use_cuda`, cache path)
+   - `ansible/templates/*.service.j2` for systemd customization
 
 2. **Run the playbook**:
    ```bash
@@ -171,6 +187,9 @@ An Ansible playbook is available for installing the services directly on a Linux
 3. **Verify services**:
    - AI Service: `http://<server>:5000/health`
    - REST API: `http://<server>:8080/v2/languages`
+
+4. **Optional system check**:
+   - Run `python ai-service/system_check.py` on the target host to validate GPU drivers, PyTorch CUDA availability, and FP16 support before enabling CUDA.
 
 ## Development
 
@@ -243,6 +262,7 @@ Key settings:
 Environment variables:
 - `PORT`: Service port (default: 5000)
 - `MODEL_NAME`: Hugging Face model ID to load (default: `facebook/nllb-200-1.3B`)
+- `USE_CUDA`: Set to `true` to prefer CUDA when available, or `false` to force CPU (default: `true`, auto-falls back to CPU)
 
 ## Troubleshooting
 

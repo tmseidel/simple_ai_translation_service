@@ -3,6 +3,7 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import os
 import logging
 import time
+import torch
 
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -12,6 +13,16 @@ logger = logging.getLogger(__name__)
 MODEL_NAME = os.environ.get("MODEL_NAME", "facebook/nllb-200-1.3B")
 MODEL_LOAD_MAX_RETRIES = int(os.environ.get("MODEL_LOAD_MAX_RETRIES", "3"))
 MODEL_LOAD_RETRY_DELAY_SEC = int(os.environ.get("MODEL_LOAD_RETRY_DELAY_SEC", "5"))
+USE_CUDA = os.environ.get("USE_CUDA", "true").lower() in ("1", "true", "yes", "on")
+
+def _resolve_device():
+    if USE_CUDA and torch.cuda.is_available():
+        return "cuda"
+    if USE_CUDA:
+        logger.warning("CUDA requested but not available. Falling back to CPU. Set USE_CUDA=false to suppress this warning.")
+    return "cpu"
+
+DEVICE = _resolve_device()
 
 # Language code mapping for NLLB (DeepL to NLLB format)
 LANGUAGE_MAP = {
@@ -42,7 +53,7 @@ model = None
 def _model_cached():
     try:
         AutoTokenizer.from_pretrained(MODEL_NAME, local_files_only=True)
-        AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME, local_files_only=True).to("cuda")
+        AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME, local_files_only=True)
         return True
     except Exception:
         return False
@@ -51,6 +62,7 @@ def load_model():
     """Load the NLLB model and tokenizer"""
     global tokenizer, model
     logger.info("Loading model: %s", MODEL_NAME)
+    logger.info("Using device: %s", DEVICE)
     for attempt in range(1, MODEL_LOAD_MAX_RETRIES + 1):
         try:
             if _model_cached():
@@ -58,7 +70,7 @@ def load_model():
             else:
                 logger.info("Model not cached. Downloading...")
             tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-            model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME).to("cuda")
+            model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME).to(DEVICE)
             logger.info("Model loaded successfully")
             return
         except Exception as e:
@@ -93,7 +105,7 @@ def translate_text(text, source_lang, target_lang):
         logger.info(f"Translating from {src_lang_code} to {tgt_lang_code}")
         
         # Tokenize
-        inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512).to("cuda")
+        inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512).to(DEVICE)
         
         # Translate
         translated_tokens = model.generate(
@@ -113,7 +125,7 @@ def translate_text(text, source_lang, target_lang):
 @app.route('/health', methods=['GET'])
 def health():
     """Health check endpoint"""
-    return jsonify({"status": "healthy", "model": MODEL_NAME}), 200
+    return jsonify({"status": "healthy", "model": MODEL_NAME, "device": DEVICE}), 200
 
 @app.route('/translate', methods=['POST'])
 def translate():

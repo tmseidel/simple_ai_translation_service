@@ -42,6 +42,7 @@ This document provides a deeper, developer-focused explanation of the core compo
   - Returns JSON: `{ "translatedText": "...", "detectedSourceLanguage": "EN" }`
 
 **Usage tip:** When running locally, start the AI service first so the Spring API can reach it.
+Use `python ai-service/system_check.py` on the host to validate CUDA, GPU availability, and basic Transformers inference before enabling GPU acceleration.
 
 ## What “Transformer” Means Here
 
