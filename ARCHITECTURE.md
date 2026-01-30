@@ -6,10 +6,12 @@
 flowchart TB
     client["Client Application<br/>(Web Browser, Mobile App, Backend Service)"]
     subgraph spring["Spring Boot REST API (Port 8080)"]
-        controller["TranslationController<br/>- POST /v2/translate<br/>- GET /v2/languages<br/>- GET /health"]
+        controller["TranslationController<br/>- POST /v2/translate<br/>- GET /v2/languages"]
+        healthController["HealthController<br/>- GET /health"]
         service["TranslationService<br/>- Request validation<br/>- Response formatting<br/>- Error handling"]
         aiService["AiTranslationService<br/>- HTTP client to AI service<br/>- Request/Response mapping"]
         controller --> service --> aiService
+        healthController
     end
     subgraph python["Python AI Translation Service (Port 5000)"]
         flask["Flask Application<br/>- POST /translate<br/>- GET /health"]
